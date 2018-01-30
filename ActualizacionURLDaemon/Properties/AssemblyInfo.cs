@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AdministraciónURL")]
-[assembly: AssemblyDescription("Administra URLs para ser descargadas")]
+[assembly: AssemblyTitle("ActualizacionURLDaemon")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Raymundo E Peralta H")]
-[assembly: AssemblyProduct("AdministraciónURL")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("ActualizacionURLDaemon")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b7b85174-f1a0-4d2a-9c7e-09374a8d5106")]
+[assembly: Guid("9d390008-60cc-4dc7-b3a6-981ec54b37af")]
 
 // Version information for an assembly consists of the following four values:
 //
