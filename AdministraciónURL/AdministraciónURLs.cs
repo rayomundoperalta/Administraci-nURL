@@ -9,88 +9,91 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Configuration;
 using System.Data.SqlClient;
-using AsYetUnnamed;
 
 namespace AdministraciónURL
 {
-    public class Form1 : System.Windows.Forms.Form
-    {
-        private DataSet ds;
-        private MultiColumnListBox listBox1;
-        public Form1()
-        {
-            ds = DataArray.ToDataSet(new object[,]{
-                    {"Row0, col0",  "Row0, col1" ,1},
-                    {"Row00, col0", "Row1, col1" ,new object()},
-                    {"Row1, col0",  "Row2, col1" ,"Some String"},
-                    {"Row1a, col0", "Row3, col1" ,Rectangle.Empty},
-                    {"row1aa,col0", "Row4, col1" ,1},
-                    {"row0, col0",  "Row5, col1" ,1},
-                    {"pow0, col0",  "Row6, col1" ,1},
-                    {"Row7, col0",  "Row7, col1" ,"Hello from ExampleClass!!"},
-                    {"Row8, col0",  "Row8, col1" ,"hola"}
-                    });
-
-            listBox1 = new MultiColumnListBox();
-            listBox1.Parent = this;
-
-            listBox1.DataSource = ds;
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            // 
-            // Form1
-            // 
-            this.ClientSize = new System.Drawing.Size(282, 253);
-            this.Name = "Form1";
-            this.ResumeLayout(false);
-
-        }
-    }
-
+    
     public partial class AdministraciónURLs : Form
     {
         SqlConnection connection;
         string connectionString;
+        String stringGetAllData = "select * from [InformacionAPF].[dbo].[URLToBeDownloaded] order by DownloadURL";
 
         public AdministraciónURLs()
         {
             InitializeComponent();
 
+            Console.WriteLine("Empezamos ...");
             connectionString = ConfigurationManager.ConnectionStrings["AdministraciónURL.Properties.Settings.InformacionAPFConnectionString"].ConnectionString;
+            Console.WriteLine(connectionString);
+            
         }
 
         private void AdministraciónURLs_Load(object sender, EventArgs e)
         {
             // TODO: This line of code loads data into the 'informacionAPFDataSet.URLToBeDownloaded' table. You can move, or remove it, as needed.
-            this.uRLToBeDownloadedTableAdapter.Fill(this.informacionAPFDataSet.URLToBeDownloaded);
+            //this.URLToBeDownloadedTableAdapter.Fill(this.informacionAPFDataSet.URLToBeDownloaded);
             PopulateURLs();
         }
 
         private void PopulateURLs()
         {
-            using (connection = new SqlConnection(connectionString))
-            using (SqlDataAdapter adapter = new SqlDataAdapter("select * from [dbo].[URLToBeDownloaded] order by DownloadURL", connection))
+            ListViewItem renglon;
+
+            listView1.Items.Clear();
+            connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand sqlCommand = new SqlCommand(stringGetAllData, connection);
+            using (SqlDataReader sqlReader = sqlCommand.ExecuteReader())
             {
-                DataTable URLdataTable = new DataTable();
+                while(sqlReader.Read())
+                {
+                    renglon = listView1.Items.Add(sqlReader[0].ToString());
+                    renglon.SubItems.Add(sqlReader[1].ToString());
+                }
                 
-                adapter.Fill(URLdataTable);
-
-                //URLs.Items.AddRange(new object[] {
-                //    "Item 1, DownloadURL",
-                //    "Item 2, URLFiletype"});
-
-                URLs.DisplayMember = "DownloadURL";
-                
-                URLs.DataSource = URLdataTable;
             }
+            connection.Close();
         }
 
-        private void URLs_SelectedIndexChanged(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(URLs.SelectedValue.ToString());
+            ListViewItem item1;
+            item1 = listView1.SelectedItems[0];
+            String execString = "EXEC [dbo].[DeleteURL] @DownloadURL = N'" + item1.Text + "'";
+            connection = new SqlConnection(connectionString);
+            connection.Open();
+            SqlCommand sqlCommand = new SqlCommand(execString, connection);
+            sqlCommand.ExecuteNonQuery();
+            connection.Close();
+            item1.Remove();
+            PopulateURLs();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text != "")
+            {
+                String execString = "EXEC [dbo].[WriteURLToBeDownLoaded] @DownloadURL = N'" + textBox1.Text + "', @URLFileType = N'" + textBox2.Text + "'";
+                connection = new SqlConnection(connectionString);
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(execString, connection);
+                sqlCommand.ExecuteNonQuery();
+                connection.Close();
+            } 
+            textBox1.Text = "";
+            textBox2.Text = "";
+            PopulateURLs();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            DialogResult iExit;
+            iExit = MessageBox.Show("Confirmar Salida", "System Down", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (iExit == DialogResult.Yes)
+            {
+                Application.Exit();
+            }
         }
     }
 }
