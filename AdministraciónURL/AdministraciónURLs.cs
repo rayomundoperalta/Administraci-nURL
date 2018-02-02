@@ -59,15 +59,18 @@ namespace AdministraciónURL
         private void button2_Click(object sender, EventArgs e)
         {
             ListViewItem item1;
-            item1 = listView1.SelectedItems[0];
-            String execString = "EXEC [dbo].[DeleteURL] @DownloadURL = N'" + item1.Text + "'";
-            connection = new SqlConnection(connectionString);
-            connection.Open();
-            SqlCommand sqlCommand = new SqlCommand(execString, connection);
-            sqlCommand.ExecuteNonQuery();
-            connection.Close();
-            item1.Remove();
-            PopulateURLs();
+            if (listView1.SelectedItems.Count > 0)
+            {
+                item1 = listView1.SelectedItems[0];
+                String execString = "EXEC [dbo].[DeleteURL] @DownloadURL = N'" + item1.Text + "'";
+                connection = new SqlConnection(connectionString);
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(execString, connection);
+                sqlCommand.ExecuteNonQuery();
+                connection.Close();
+                item1.Remove();
+                PopulateURLs();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -89,7 +92,7 @@ namespace AdministraciónURL
         private void button3_Click(object sender, EventArgs e)
         {
             DialogResult iExit;
-            iExit = MessageBox.Show("Confirmar Salida", "System Down", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            iExit = MessageBox.Show("Confirmar Salida", "Administración URL", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (iExit == DialogResult.Yes)
             {
                 Application.Exit();
