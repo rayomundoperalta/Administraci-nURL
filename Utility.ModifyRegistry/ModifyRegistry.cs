@@ -54,7 +54,7 @@ namespace Utility.ModifyRegistry
             set { subKey = value; }
         }
 
-        private RegistryKey baseRegistryKey_Oculto = Registry.LocalMachine;
+        //private RegistryKey baseRegistryKey_Oculto = Registry.LocalMachine;
         private RegistryKey baseRegistryKey = Registry.CurrentUser;
         /// <summary>
         /// A property to set the BaseRegistryKey value.

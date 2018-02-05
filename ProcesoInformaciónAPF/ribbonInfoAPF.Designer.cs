@@ -1,13 +1,13 @@
 ﻿namespace ProcesoInformaciónAPF
 {
-    partial class InfoAPF : Microsoft.Office.Tools.Ribbon.RibbonBase
+    partial class ribbonInfoAPF : Microsoft.Office.Tools.Ribbon.RibbonBase
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        public InfoAPF()
+        public ribbonInfoAPF()
             : base(Globals.Factory.GetRibbonFactory())
         {
             InitializeComponent();
@@ -36,8 +36,7 @@
         {
             this.tabInfoAPF = this.Factory.CreateRibbonTab();
             this.Estado = this.Factory.CreateRibbonGroup();
-            this.labelEstado = this.Factory.CreateRibbonLabel();
-            this.buttonONOFF = this.Factory.CreateRibbonButton();
+            this.checkBox1 = this.Factory.CreateRibbonCheckBox();
             this.tabInfoAPF.SuspendLayout();
             this.Estado.SuspendLayout();
             this.SuspendLayout();
@@ -50,27 +49,19 @@
             // 
             // Estado
             // 
-            this.Estado.Items.Add(this.labelEstado);
-            this.Estado.Items.Add(this.buttonONOFF);
+            this.Estado.Items.Add(this.checkBox1);
             this.Estado.Label = "Estado";
             this.Estado.Name = "Estado";
             // 
-            // labelEstado
+            // checkBox1
             // 
-            this.labelEstado.Label = "Activado";
-            this.labelEstado.Name = "labelEstado";
-            this.labelEstado.ScreenTip = "Muestra es estado de complemento InfoAPF";
+            this.checkBox1.Label = "Activado";
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox1_Click);
             // 
-            // buttonONOFF
+            // ribbonInfoAPF
             // 
-            this.buttonONOFF.Description = "Activa y desactiva el complemento InfoAPF";
-            this.buttonONOFF.Label = "ON/OFF";
-            this.buttonONOFF.Name = "buttonONOFF";
-            this.buttonONOFF.ScreenTip = "Activa y desactiva el complemento";
-            // 
-            // InfoAPF
-            // 
-            this.Name = "InfoAPF";
+            this.Name = "ribbonInfoAPF";
             this.RibbonType = "Microsoft.Excel.Workbook";
             this.Tabs.Add(this.tabInfoAPF);
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.InfoAPF_Load);
@@ -86,15 +77,14 @@
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tabInfoAPF;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup Estado;
-        internal Microsoft.Office.Tools.Ribbon.RibbonLabel labelEstado;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton buttonONOFF;
+        internal Microsoft.Office.Tools.Ribbon.RibbonCheckBox checkBox1;
     }
 
     partial class ThisRibbonCollection
     {
-        internal InfoAPF InfoAPF
+        internal ribbonInfoAPF InfoAPF
         {
-            get { return this.GetRibbon<InfoAPF>(); }
+            get { return this.GetRibbon<ribbonInfoAPF>(); }
         }
     }
 }

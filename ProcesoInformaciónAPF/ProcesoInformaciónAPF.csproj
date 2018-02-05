@@ -123,6 +123,15 @@
   -->
   <ItemGroup>
     <Reference Include="Accessibility" />
+    <Reference Include="Globales">
+      <HintPath>..\Globales\bin\Debug\Globales.dll</HintPath>
+    </Reference>
+    <Reference Include="Globals">
+      <HintPath>..\Globals\bin\Debug\Globals.dll</HintPath>
+    </Reference>
+    <Reference Include="GlobalStrings">
+      <HintPath>..\GlobalStrings\bin\Debug\GlobalStrings.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -133,6 +142,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Utility.ModifyRegistry">
+      <HintPath>..\Utility.ModifyRegistry\bin\Debug\Utility.ModifyRegistry.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -180,17 +192,17 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="InfoAPF.cs">
+    <Compile Include="ribbonInfoAPF.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="InfoAPF.Designer.cs">
-      <DependentUpon>InfoAPF.cs</DependentUpon>
+    <Compile Include="ribbonInfoAPF.Designer.cs">
+      <DependentUpon>ribbonInfoAPF.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="InfoAPF.resx">
-      <DependentUpon>InfoAPF.cs</DependentUpon>
+    <EmbeddedResource Include="ribbonInfoAPF.resx">
+      <DependentUpon>ribbonInfoAPF.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1,23 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
-using Office = Microsoft.Office.Core;
-using Microsoft.Office.Tools.Excel;
 using System.Data.SqlClient;
+using Utility.ModifyRegistry;
+using Globales;
 
 namespace ProcesoInformaciónAPF
 {
     public partial class ThisAddIn
     {
-        string connectionString;
+
+        Cadenas g = new Cadenas();
+        private ModifyRegistry myModifyRegistry;
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
+            MessageBox.Show("InfoAPF Cargada", "Procesamiento InfoAPF");
+            /* La llave del estado del add in se debe escribir solo si no existe en el registro */
+            /* debe funcionar como un toggle */
+            /* La primera vez el add in queda activado, después se acuerda del estado */
+            myModifyRegistry = new ModifyRegistry(g.RegEditID());
+            if (myModifyRegistry.Read(g.RegKeyEstado()) == null)
+            {
+                if (myModifyRegistry.Write(g.RegKeyEstado(), g.EstadoActivado()))
+                {
+                    
+                    MessageBox.Show("Info APF ACTIVADO", "Procesamiento InfoAPF");
+                }
+            }
+            Globals.Ribbons.InfoAPF.checkBox1.Checked = myModifyRegistry.Read(g.RegKeyEstado()).Equals(g.EstadoActivado());
             
+            /*
             this.Application.WorkbookBeforeSave += new Microsoft.Office.Interop.Excel.AppEvents_WorkbookBeforeSaveEventHandler(Application_WorkbookBeforeSave);
             MessageBox.Show("Bienvenido, Procesamiento APF", "Procesador Información APF");
 
@@ -25,6 +38,7 @@ namespace ProcesoInformaciónAPF
 
             this.Application.WorkbookOpen += Application_WorkbookOpen;
             ((Excel.AppEvents_Event)Application).NewWorkbook += new Microsoft.Office.Interop.Excel.AppEvents_NewWorkbookEventHandler(Application_NewWorkbook);
+            */
         }
 
         private void Application_WorkbookOpen(Excel.Workbook Wb)
@@ -41,16 +55,24 @@ namespace ProcesoInformaciónAPF
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            /* esta rutina es llamada al momento de cerrar Excel, no debe cambiar el estado */
+            //myModifyRegistry.DeleteKey(g.RegKeyEstado());
+            //myModifyRegistry.DeleteSubKeyTree();
+            //MessageBox.Show("InfoAPF Descargado", "Procesamiento InfoAPF");
+        }
+
+        private void ThisAddIn_WorkbookAddinUninstall(object sender, System.EventArgs e)
+        {
+            MessageBox.Show("U N I N S T A L L", "Addin");
         }
 
         void Application_SheetActivate(Object sh)
         {
-            connectionString = "Data Source=LAPTOP-BFFAQ78G;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=qc2;Password=1nt3rm3x.";
             Excel.Worksheet activeWorksheet = ((Excel.Worksheet)Application.ActiveSheet);
             Excel.Range firstRow;
             Excel.Range newFirstRow;
 
-            SqlConnection conn = new SqlConnection(connectionString);
+            SqlConnection conn = new SqlConnection(g.ConnectionString());
             conn.Open();
             SqlCommand command = new SqlCommand("select * from [InformacionAPF].[dbo].[URLToBeDownloaded]", conn);
             SqlDataReader reader = command.ExecuteReader();
