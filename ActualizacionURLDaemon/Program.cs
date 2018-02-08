@@ -55,7 +55,7 @@ namespace ActualizacionURLDaemon
             return true;
         }
 
-        static void InicializaEspacioDeTrabajo()
+        static void LimpiaDirectorioTemporal()
         {
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
@@ -104,12 +104,53 @@ namespace ActualizacionURLDaemon
                         {
                             Console.WriteLine("Descomprimiendo " + entry.FullName);
                             entry.ExtractToFile(Path.Combine(APFDataFiles, entry.FullName));
+                            /*
                             SqlConnection conn = new SqlConnection(connectionString);
                             conn.Open();
                             SqlCommand command = new SqlCommand("exec [dbo].[WriteProcesarArchivo] '" + entry.FullName + "'", conn);
                             command.ExecuteNonQuery();
                             conn.Close();
+                            */
+
+                            Excel.Workbook wb;
+                            object oMissing1 = Type.Missing;
+                            var app = new Microsoft.Office.Interop.Excel.Application();
+                            wb = app.Workbooks.Open(Path.Combine(APFDataFiles, entry.FullName),
+                                                    oMissing1, oMissing1, oMissing1, oMissing1,
+                                                    oMissing1, oMissing1, oMissing1, oMissing1,
+                                                    oMissing1, oMissing1, oMissing1, oMissing1,
+                                                    oMissing1, oMissing1);
                             
+                            wb.Close();
+                            app.Quit();
+                            //wb.Save();
+                            // Excel.XlFileFormat.xlExcel12
+                            Marshal.ReleaseComObject(wb);
+                            Marshal.ReleaseComObject(app);
+                            
+
+                            /*
+                            Excel.Worksheet activeWorksheet = ((Excel.Worksheet)Application.ActiveSheet);
+                            Excel.Range firstRow;
+                            Excel.Range newFirstRow;
+
+                            SqlConnection conn = new SqlConnection(g.ConnectionString());
+                            conn.Open();
+                            SqlCommand command = new SqlCommand("select * from [InformacionAPF].[dbo].[URLToBeDownloaded]", conn);
+                            SqlDataReader reader = command.ExecuteReader();
+                            int i = 1;
+                            while (reader.Read())
+                            {
+                                MessageBox.Show(reader[0] + " -- " + reader[1], "Info para verificar");
+                            }
+                            Excel.Worksheet activeWorksheet = ((Excel.Worksheet)Application.ActiveSheet);
+                            Excel.Range firstRow = activeWorksheet.get_Range("A1");
+                            firstRow.EntireRow.Insert(Excel.XlInsertShiftDirection.xlShiftDown);
+                            Excel.Range newFirstRow = activeWorksheet.get_Range("A1");
+                            newFirstRow.Value2 = "This text was added by using code";
+                            conn.Close();
+                            */
+
                         }
                     }
                 }
@@ -132,7 +173,7 @@ namespace ActualizacionURLDaemon
             //Process.Start(APFDataFiles + entry.FullName).WaitForExit();
         }
 
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
             object oMissing = System.Reflection.Missing.Value;
                 Excel.Workbook wb;
@@ -150,11 +191,12 @@ namespace ActualizacionURLDaemon
                                         Type.Missing, Type.Missing, Type.Missing,
                                         Type.Missing, Type.Missing);
                                         // Excel.XlFileFormat.xlExcel12
+                                       
                 app.Quit();
                 app.Quit();
         }
 
-        static void Main1(string[] args)
+        static void Main(string[] args)
         {
             /*
              * Los archivos de compranet se actualizan al menos una vez al día
@@ -171,9 +213,9 @@ namespace ActualizacionURLDaemon
             SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
 
             Console.WriteLine("Corriendo la actualización de los archivos de la APF");
-            Console.WriteLine(connectionString);
+            //Console.WriteLine(connectionString);
 
-            InicializaEspacioDeTrabajo();
+            LimpiaDirectorioTemporal();
 
             WebClient webClient = new WebClient();
             SqlConnection conn = new SqlConnection(connectionString);
