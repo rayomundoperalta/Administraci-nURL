@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Data.SqlClient;
@@ -18,13 +20,14 @@ namespace ProcesoInformaciónAPF
 
         Cadenas g = new Cadenas();
         private ModifyRegistry myModifyRegistry;
+        public int año;
 
         private void ProcesaArchivosXLSX()
         {
             string actualFilename = Globals.ThisAddIn.Application.ActiveWorkbook.FullName.Substring(Globals.ThisAddIn.Application.ActiveWorkbook.FullName.LastIndexOf('\\') + 1);
             int numeroDeRegistrosEnExcel = 0;
             int numeroDeColumnasEnExcel = 0;
-            int numeroDeRegistrosEnSql = 0;
+            //int numeroDeRegistrosEnSql = 0;
 
             MessageBox.Show("Estamos en ProcesarArchivosXLSX - " + actualFilename, "D e b u g");
 
@@ -39,17 +42,11 @@ namespace ProcesoInformaciónAPF
             SqlConnection conn = new SqlConnection(g.ConnectionString());
             conn.Open();
             string comando;
-            
-            int i = 1;
-            while (reader.Read())
-            {
-                MessageBox.Show(reader[0] + " -- " + reader[1], "Info para verificar");
-            }
-            
+            /* Hay que obtener el año de alguna forma */
             for (int i = 2; i <= numeroDeRegistrosEnExcel; i++)
             {
-                comando = "EXECUTE [dbo].[InsertaContrato] " + i.ToString() + ", ";
-                comando += 
+                comando = "EXECUTE [dbo].[InsertaContrato] " + (i - 1).ToString() + ", ";
+                comando += año.ToString() + ", ";
                 /*
                 for (int j = 1; j <= numeroDeColumnasEnExcel; j++)
                 {
@@ -57,8 +54,9 @@ namespace ProcesoInformaciónAPF
                     MessageBox.Show("[" + i.ToString() + "," + j.ToString() + "] : " + test, "D A T O S");
                 }
                 */
-                SqlCommand command = new SqlCommand(comando, conn);
-                command.ExecuteNonQuery();
+                MessageBox.Show(comando, "Inserts to SQL");
+                //SqlCommand command = new SqlCommand(comando, conn);
+                //command.ExecuteNonQuery();
             }
             conn.Close();
 

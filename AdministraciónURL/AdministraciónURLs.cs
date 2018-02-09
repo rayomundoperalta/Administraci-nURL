@@ -50,6 +50,7 @@ namespace AdministraciónURL
                 {
                     renglon = listView1.Items.Add(sqlReader[0].ToString());
                     renglon.SubItems.Add(sqlReader[1].ToString());
+                    renglon.SubItems.Add(sqlReader[2].ToString());
                 }
                 
             }
@@ -77,7 +78,7 @@ namespace AdministraciónURL
         {
             if (textBox1.Text != "")
             {
-                String execString = "EXEC [dbo].[WriteURLToBeDownLoaded] @DownloadURL = N'" + textBox1.Text + "', @URLFileType = N'" + textBox2.Text + "'";
+                String execString = "EXEC [dbo].[WriteURLToBeDownLoaded] @DownloadURL = N'" + textBox1.Text + "', @URLFileType = N'" + textBox2.Text + "', @AñoInfo = " + textBox3.Text;
                 connection = new SqlConnection(connectionString);
                 connection.Open();
                 SqlCommand sqlCommand = new SqlCommand(execString, connection);
@@ -86,6 +87,7 @@ namespace AdministraciónURL
             } 
             textBox1.Text = "";
             textBox2.Text = "";
+            textBox3.Text = "";
             PopulateURLs();
         }
 

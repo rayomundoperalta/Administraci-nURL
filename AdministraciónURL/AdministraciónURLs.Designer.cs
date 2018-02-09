@@ -38,6 +38,8 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.textBox3 = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -47,7 +49,8 @@
             this.listView1.AllowColumnReorder = true;
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
-            this.columnHeader2});
+            this.columnHeader2,
+            this.columnHeader3});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.LabelEdit = true;
@@ -62,7 +65,7 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Descargar URLs";
-            this.columnHeader1.Width = 797;
+            this.columnHeader1.Width = 738;
             // 
             // columnHeader2
             // 
@@ -72,6 +75,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.SteelBlue;
+            this.panel1.Controls.Add(this.textBox3);
             this.panel1.Controls.Add(this.textBox2);
             this.panel1.Controls.Add(this.textBox1);
             this.panel1.Controls.Add(this.panel2);
@@ -82,7 +86,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(766, 23);
+            this.textBox2.Location = new System.Drawing.Point(629, 23);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(144, 23);
             this.textBox2.TabIndex = 2;
@@ -91,7 +95,7 @@
             // 
             this.textBox1.Location = new System.Drawing.Point(17, 23);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(743, 23);
+            this.textBox1.Size = new System.Drawing.Size(606, 23);
             this.textBox1.TabIndex = 1;
             // 
             // panel2
@@ -135,6 +139,17 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Año";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(779, 23);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(131, 23);
+            this.textBox3.TabIndex = 3;
+            // 
             // AdministraciónURLs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -166,6 +181,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.TextBox textBox3;
     }
 }
 

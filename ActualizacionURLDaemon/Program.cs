@@ -8,7 +8,6 @@ using System.IO.Compression;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
 
-
 namespace ActualizacionURLDaemon
 {
     class Program
@@ -85,7 +84,12 @@ namespace ActualizacionURLDaemon
             }
         }
 
-        static void ExtraeRegistraXLSX(string fileName)
+        private void App_WorkbookActivate(Excel.Workbook Wb)
+        {
+            Console.WriteLine("d e b u g: Estamos en Activate");
+        }
+
+        static void ExtraeRegistraXLSX(string fileName, int año)
         {
             /*
              * Esta rutina se va a encargar de procesar los archivos XLSX, es decir, limpiarlos y cargarlos a la BD
@@ -115,16 +119,104 @@ namespace ActualizacionURLDaemon
                             Excel.Workbook wb;
                             object oMissing1 = Type.Missing;
                             var app = new Microsoft.Office.Interop.Excel.Application();
+                            // app.WorkbookActivate += Applic_WorkbookActivate;
                             wb = app.Workbooks.Open(Path.Combine(APFDataFiles, entry.FullName),
                                                     oMissing1, oMissing1, oMissing1, oMissing1,
                                                     oMissing1, oMissing1, oMissing1, oMissing1,
                                                     oMissing1, oMissing1, oMissing1, oMissing1,
                                                     oMissing1, oMissing1);
                             
+                            //wb.ActiveSheet.Cells[1, 1] = 54;
+                            Excel.Range rango = wb.ActiveSheet.Range("A1").CurrentRegion;
+                            
+                            Console.WriteLine("Valor " + wb.ActiveSheet.Cells[1, 1].Value.ToString() + " - renglones + 1 = " + rango.Rows.Count.ToString() + " - columnas =" + rango.Columns.Count.ToString());
+
+                            int renglones = rango.Rows.Count;
+                            int columnas = rango.Columns.Count;
+                            SqlConnection conn = new SqlConnection(connectionString);
+                            conn.Open();
+                            string comando;
+                            /* Hay que obtener el año de alguna forma */
+                            for (int i = 2; i <= renglones; i++)
+                            {
+                                comando = "EXECUTE [dbo].[InsertaContrato] " + (i - 1).ToString() + ", ";
+                                comando += año.ToString() + ", '";
+                                comando += wb.ActiveSheet.Cells[i, 1].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 2].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 3].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 4].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 5].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 6].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 7].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 8].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 9].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 10].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 11].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 12].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 13].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 14].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 15].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 16].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 17].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 18].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 19].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 20].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 21].Value.ToString() + "', ";
+                                string importeContrato = wb.ActiveSheet.Cells[i, 22].Value.ToString();
+                                if (omporteContrato.Length > 0)
+                                {
+                                    comando += importeContrato.ToString() + ", '";
+                                }
+                                else
+                                {
+                                    comando += 0 + ", '";
+                                }
+                                comando += wb.ActiveSheet.Cells[i, 22].Value.ToString() + ", '";
+                                comando += wb.ActiveSheet.Cells[i, 23].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 24].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 25].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 26].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 27].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 28].Value.ToString() + "', ";
+                                string aportaciónFederal = wb.ActiveSheet.Cells[i, 29].Value.ToString(); 
+                                if (aportaciónFederal.Length > 0)
+                                {
+                                    comando += aportaciónFederal.ToString() + ", '";
+                                } else
+                                {
+                                    comando += 0 +", '";
+                                }
+                                
+                                comando += wb.ActiveSheet.Cells[i, 30].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 31].Value.ToString() + "', '";
+                                comando += "', '";
+                                comando += wb.ActiveSheet.Cells[i, 32].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 33].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 34].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 35].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 36].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 37].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 38].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 39].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 40].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 41].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 42].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 43].Value.ToString() + "', '";
+                                comando += wb.ActiveSheet.Cells[i, 44].Value.ToString() + "'";
+                                SqlCommand sqlCommand = new SqlCommand(comando, conn);
+                                try
+                                {
+                                    sqlCommand.ExecuteNonQuery();
+                                }
+                                catch (SqlException e)
+                                {
+                                    Console.WriteLine(comando);
+                                    Console.WriteLine(e.ToString());
+                                    app.Quit();
+                                }
+                            }
                             wb.Close();
                             app.Quit();
-                            //wb.Save();
-                            // Excel.XlFileFormat.xlExcel12
                             Marshal.ReleaseComObject(wb);
                             Marshal.ReleaseComObject(app);
                             
@@ -165,6 +257,11 @@ namespace ActualizacionURLDaemon
             {
                 Console.WriteLine(fileNotFoud.Message);
             }
+        }
+
+        private static void Applic_WorkbookActivate(Excel.Workbook Wb)
+        {
+            throw new NotImplementedException();
         }
 
         private static void ProcesaXLSXs()
@@ -223,10 +320,15 @@ namespace ActualizacionURLDaemon
             SqlCommand command = new SqlCommand("select * from [InformacionAPF].[dbo].[URLToBeDownloaded] order by DownloadURL", conn);
             SqlDataReader reader = command.ExecuteReader();
             string fileTitle, fileType, newFileTitle;
+            int año;
             while (reader.Read())
             {
                 fileTitle = reader[0].ToString();
                 fileType = reader[1].ToString();
+                if (!int.TryParse(reader[2].ToString(), out año))
+                {
+                    año = 0;
+                };
                 newFileTitle = APFDataFiles + fileTitle.Substring(fileTitle.LastIndexOf('/') + 1);
                 Console.WriteLine("Descargando: " + fileTitle + " - " + fileType);
                 Console.WriteLine(newFileTitle);
@@ -236,7 +338,7 @@ namespace ActualizacionURLDaemon
                 //System.IO.Compression.ZipFile.ExtractToDirectory(newFileTitle, APFDataFiles);
                 if (fileType.Equals("zip-xlsx", StringComparison.Ordinal))
                 {
-                    ExtraeRegistraXLSX(newFileTitle);
+                    ExtraeRegistraXLSX(newFileTitle, año);
                 } else if (fileType.Equals("", StringComparison.Ordinal)) {
                     Console.WriteLine("No se hace nada para: " + fileTitle);
                 }

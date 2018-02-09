@@ -192,6 +192,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="GetExternalData.cs" />
     <Compile Include="ribbonInfoAPF.cs">
       <SubType>Component</SubType>
     </Compile>

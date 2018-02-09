@@ -16,7 +16,6 @@ namespace AdministraciónURL
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new AdministraciónURLs());
             Application.Run(new AdministraciónURLs());
         }
     }
