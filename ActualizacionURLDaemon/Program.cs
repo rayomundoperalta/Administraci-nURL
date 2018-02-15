@@ -7,6 +7,8 @@ using System.Data.SqlClient;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using Excel = Microsoft.Office.Interop.Excel;
+using Utility.Ecape;
+
 
 namespace ActualizacionURLDaemon
 {
@@ -14,6 +16,7 @@ namespace ActualizacionURLDaemon
     {
         static String connectionString = ConfigurationManager.ConnectionStrings["ActualizacionURLDaemon.Properties.Settings.InformacionAPFConnectionString"].ConnectionString;
         static string APFDataFiles = @"D:\CompraNetTemporaryDataFiles\";
+        static System.IO.StreamWriter archivoPlano;
 
         private static void KillExcel()
         {
@@ -30,6 +33,23 @@ namespace ActualizacionURLDaemon
                 }
             }
         }
+
+        /* Cómo escribir a un archivo
+            using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(@"C:\Users\Public\TestFolder\WriteLines2.txt"))
+            {
+                foreach (string line in lines)
+                {
+                    // If the line doesn't contain the word 'Second', write the line to the file.
+                    if (!line.Contains("Second"))
+                    {
+                        file.WriteLine(line);
+                    }
+                }
+            }
+
+            Supongo que es necesario cerrar el archivo
+        */
 
         private static bool ConsoleCtrlCheck(CtrlTypes ctrlType)
         {
@@ -95,6 +115,11 @@ namespace ActualizacionURLDaemon
              * Esta rutina se va a encargar de procesar los archivos XLSX, es decir, limpiarlos y cargarlos a la BD
              * Suponemos que va a ser posible subir a la BD el contenido del xlsx sin mayor problema
              */
+            
+            /* Esta es la expresion regular que se necesita para escapear las comillas y las comas */
+            /* Se inicializa la expresión regular para solo hacerlo una vez */
+            string RegExp = @"(['])";
+            Escape e = new Escape(RegExp);
 
             using (FileStream zipToOpen = new FileStream(fileName, FileMode.Open))
             {
@@ -141,29 +166,29 @@ namespace ActualizacionURLDaemon
                             {
                                 comando = "EXECUTE [dbo].[InsertaContrato] " + (i - 1).ToString() + ", ";
                                 comando += año.ToString() + ", '";
-                                comando += wb.ActiveSheet.Cells[i, 1].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 2].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 3].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 4].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 5].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 6].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 7].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 8].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 9].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 10].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 11].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 12].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 13].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 14].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 15].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 16].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 17].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 18].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 19].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 20].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 21].Value.ToString() + "', ";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 1].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 2].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 3].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 4].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 5].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 6].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 7].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 8].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 9].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 10].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 11].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 12].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 13].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 14].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 15].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 16].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 17].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 18].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 19].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 20].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 21].Value.ToString()) + "', ";
                                 string importeContrato = wb.ActiveSheet.Cells[i, 22].Value.ToString();
-                                if (omporteContrato.Length > 0)
+                                if (importeContrato.Length > 0)
                                 {
                                     comando += importeContrato.ToString() + ", '";
                                 }
@@ -171,13 +196,12 @@ namespace ActualizacionURLDaemon
                                 {
                                     comando += 0 + ", '";
                                 }
-                                comando += wb.ActiveSheet.Cells[i, 22].Value.ToString() + ", '";
-                                comando += wb.ActiveSheet.Cells[i, 23].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 24].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 25].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 26].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 27].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 28].Value.ToString() + "', ";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 23].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 24].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 25].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 26].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 27].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 28].Value.ToString()) + "', ";
                                 string aportaciónFederal = wb.ActiveSheet.Cells[i, 29].Value.ToString(); 
                                 if (aportaciónFederal.Length > 0)
                                 {
@@ -187,31 +211,31 @@ namespace ActualizacionURLDaemon
                                     comando += 0 +", '";
                                 }
                                 
-                                comando += wb.ActiveSheet.Cells[i, 30].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 31].Value.ToString() + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 30].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 31].Value.ToString()) + "', '";
                                 comando += "', '";
-                                comando += wb.ActiveSheet.Cells[i, 32].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 33].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 34].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 35].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 36].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 37].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 38].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 39].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 40].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 41].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 42].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 43].Value.ToString() + "', '";
-                                comando += wb.ActiveSheet.Cells[i, 44].Value.ToString() + "'";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 32].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 33].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 34].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 35].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 36].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 37].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 38].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 39].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 40].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 41].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 42].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 43].Value.ToString()) + "', '";
+                                comando += e.Reemplaza(wb.ActiveSheet.Cells[i, 44].Value.ToString()) + "'";
                                 SqlCommand sqlCommand = new SqlCommand(comando, conn);
                                 try
                                 {
                                     sqlCommand.ExecuteNonQuery();
                                 }
-                                catch (SqlException e)
+                                catch (SqlException ex)
                                 {
                                     Console.WriteLine(comando);
-                                    Console.WriteLine(e.ToString());
+                                    Console.WriteLine(ex.ToString());
                                     app.Quit();
                                 }
                             }

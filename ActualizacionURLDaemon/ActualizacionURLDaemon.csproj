@@ -132,5 +132,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Utility.EscapeChars\Utility.Escape.csproj">
+      <Project>{5216f88b-3834-4776-93a1-80d767b10947}</Project>
+      <Name>Utility.Escape</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
