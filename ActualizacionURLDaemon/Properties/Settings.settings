@@ -5,10 +5,24 @@
     <Setting Name="InformacionAPFConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Data Source=LAPTOP-BFFAQ78G;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=qc2;Password=1nt3rm3x.&lt;/ConnectionString&gt;
+  &lt;ConnectionString&gt;Data Source=REPH-NITRO-5;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=sa;Password=Samahil14200&lt;/ConnectionString&gt;
   &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Data Source=LAPTOP-BFFAQ78G;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=qc2;Password=1nt3rm3x.</Value>
+      <Value Profile="(Default)">Data Source=REPH-NITRO-5;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=sa;Password=Samahil14200</Value>
+    </Setting>
+    <Setting Name="APFDataFiles" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;D:\CompraNetTemporaryDataFiles\&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">D:\CompraNetTemporaryDataFiles\</Value>
+    </Setting>
+    <Setting Name="Excel2TxtPython" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;C:\Windows\py.exe&lt;/ConnectionString&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">C:\Windows\py.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

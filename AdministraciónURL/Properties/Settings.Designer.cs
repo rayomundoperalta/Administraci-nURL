@@ -12,7 +12,7 @@ namespace AdministraciónURL.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -26,8 +26,8 @@ namespace AdministraciónURL.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=LAPTOP-BFFAQ78G;Initial Catalog=InformacionAPF;Persist Security Info=" +
-            "True;User ID=qc2;Password=1nt3rm3x.")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=REPH-NITRO-5;Initial Catalog=InformacionAPF;Persist Security Info=Tru" +
+            "e;User ID=sa;Password=Samahil14200")]
         public string InformacionAPFConnectionString {
             get {
                 return ((string)(this["InformacionAPFConnectionString"]));

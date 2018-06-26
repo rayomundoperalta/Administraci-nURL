@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Text;
 using System.Text.RegularExpressions;
 
 
@@ -31,6 +28,34 @@ namespace TipoContrato
 
         // Enumurable to get tokens from the given expression (scanner)
         public static IEnumerable<TokenEntity> GetLambdaCalcTokens(this string exp)
+        {
+            Token[] tokens = Enum.GetValues(typeof(Token)).OfType<Token>().ToArray();
+
+            foreach (Match m in MathRegex.Matches(exp))
+            {
+                foreach (Group group in m.Groups)
+                {
+                    Console.WriteLine("-G> " + group.Value);
+                }
+                // Check which token is matched by this match object
+                foreach (Token token in tokens)
+                {
+                    Console.Write(">TS> " + token.ToString() + " - " + m.Groups[token.ToString()].Value);
+                    if (m.Groups[token.ToString()].Success)
+                    {
+                        Console.WriteLine(m.Index.ToString() + " " + m.Value);
+                        yield return new TokenEntity(
+                            token,
+                            m.Index,
+                            m.Value);
+                    }
+                }
+            }
+            // return the end string token, to indecate we are done
+            yield return new TokenEntity(Token.Other, exp.Length, "\0");
+        }
+
+        public static IEnumerable<TokenEntity> NoEleganteGetLambdaCalcTokens(string exp)
         {
             Token[] tokens = Enum.GetValues(typeof(Token)).OfType<Token>().ToArray();
             foreach (Match m in MathRegex.Matches(exp))
@@ -87,6 +112,16 @@ namespace TipoContrato
             }
 
             foreach (TokenEntity t in "contratos_2013_20180214163710.xlsx".GetLambdaCalcTokens())
+            {
+                Console.WriteLine(t);
+            }
+
+            foreach (TokenEntity t in LambdaCalcScanner.NoEleganteGetLambdaCalcTokens("contratos_2010_2012_20180215142534.xlsx"))
+            {
+                Console.WriteLine(t);
+            }
+
+            foreach (TokenEntity t in LambdaCalcScanner.NoEleganteGetLambdaCalcTokens("contratos_2013_20180214163710.xlsx"))
             {
                 Console.WriteLine(t);
             }

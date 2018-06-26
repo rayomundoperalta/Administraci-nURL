@@ -2,7 +2,7 @@
 {
     public class Cadenas
     {
-        private const string connectionString = "Data Source=LAPTOP-BFFAQ78G;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=qc2;Password=1nt3rm3x.";
+        private const string connectionString = "Data Source=REPH-NITRO-5;Initial Catalog=InformacionAPF;Persist Security Info=True;User ID=qc2;Password=1nt3rm3x.";
         private const string regEditID = "Peta Computing";
         private const string regKeyEstado = "ETAT";
         private const string estadoActivado = "Activado";
