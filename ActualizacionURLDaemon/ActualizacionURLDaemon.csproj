@@ -150,5 +150,8 @@
   <ItemGroup>
     <Content Include="xlsx\excel2txt.py" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SQL QUERIES\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

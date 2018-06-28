@@ -175,7 +175,7 @@ namespace ActualizacionURLDaemon
             Application app;
             DTSExecResult pkgResults;
 
-            pkgLocation = @"D:\VSProjects\ISPAPF1\ISPAPF1\" +  Path.GetFileNameWithoutExtension(OutputFileName) + ".dtsx";
+            pkgLocation = @"D:\VSProjects\AdministraciónURL\ISPAPF1\ISPAPF1\" +  Path.GetFileNameWithoutExtension(OutputFileName) + ".dtsx";
             app = new Application();
             pkg = app.LoadPackage(pkgLocation, null);
             pkgResults = pkg.Execute();
@@ -194,33 +194,80 @@ namespace ActualizacionURLDaemon
             //Escape e = new Escape(RegExp);
 
             string fullName = null;
-
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
             using (FileStream zipToOpen = new FileStream(fileName, FileMode.Open))
             {
-                Console.WriteLine("------------------> " + fileName + " !! " + Path.GetFileNameWithoutExtension(fileName));
+                string ZipFileName = Path.GetFileNameWithoutExtension(fileName);
+                Console.WriteLine("------------------> " + fileName + " !! " + ZipFileName);
                 using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
                 {
                     Console.WriteLine("Numero de archivos en el zipfile: " + archive.Entries.Count.ToString());
-                    foreach( ZipArchiveEntry entry in  archive.Entries)
+                    if (archive.Entries.Count < 2)
                     {
-                        Console.WriteLine("archivo: " + entry.FullName);
-                        if (entry.FullName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                        foreach (ZipArchiveEntry entry in archive.Entries)
                         {
-                            //object oMissing = System.Reflection.Missing.Value;
-                            Console.WriteLine("Descomprimiendo " + entry.FullName);
-                            fullName = Path.Combine(APFDataFiles, entry.FullName);
-                            Console.WriteLine(fullName);
-                            entry.ExtractToFile(fullName);
+                            string FileNameSinExt = Path.GetFileNameWithoutExtension(entry.FullName);
+                            string FechaDeActualización = FileNameSinExt.Substring(FileNameSinExt.Length - 12);
+                            Console.WriteLine("archivo: " + entry.FullName + " sin ext: " + FileNameSinExt + " fecha hora: " + FechaDeActualización);
                             
-                            runPythonScript("D:\\VSProjects\\AdministraciónURL\\ActualizacionURLDaemon\\xlsx\\excel2txt.py", fullName + " " + APFDataFiles + "archivo.txt");
-                            CleanningAPFExcelTxtFile(APFDataFiles + "archivo.txt",
-                                APFDataFiles + Path.GetFileNameWithoutExtension(fileName) + ".txt");
-                            Console.WriteLine("--------------> " + APFDataFiles + " ++++ " + entry.FullName);
+                            ////////////////
+                            SqlCommand command = new SqlCommand("select SFPLastUpdate from [InformacionAPF].[dbo].[SFPFechaActualización] where FileName = '" + ZipFileName + "'", conn);
+                            SqlDataReader reader = command.ExecuteReader();
+                            string SFPLastUpdate;
+                            bool ProcesarArchivo = false;
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                SFPLastUpdate = reader[0].ToString();
+                                reader.Close();
+                                if (Convert.ToInt64(FechaDeActualización) > Convert.ToInt64(SFPLastUpdate))
+                                {
+                                    ProcesarArchivo = true;
+                                    command = new SqlCommand("UPDATE [InformacionAPF].[dbo].[SFPFechaActualización] SET SFPLastUpdate = " + FechaDeActualización + " where FileName = " + ZipFileName, conn);
+                                    command.ExecuteNonQuery();
+                                }
+                            }
+                            else
+                            {
+                                reader.Close();
+                                ProcesarArchivo = true;
+                                command = new SqlCommand("INSERT INTO [InformacionAPF].[dbo].[SFPFechaActualización] (FileName, SFPLastUpdate) VALUES ('" + ZipFileName + "', '" + FechaDeActualización + "')", conn);
+                                command.ExecuteNonQuery();
+                            }
+                            ////////////////
+                            if (ProcesarArchivo)
+                            {
+                                if (entry.FullName.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    //object oMissing = System.Reflection.Missing.Value;
+                                    Console.WriteLine("Descomprimiendo " + entry.FullName);
+                                    fullName = Path.Combine(APFDataFiles, entry.FullName);
+                                    Console.WriteLine(fullName);
+                                    entry.ExtractToFile(fullName);
+
+                                    runPythonScript("D:\\VSProjects\\AdministraciónURL\\ActualizacionURLDaemon\\xlsx\\excel2txt.py", fullName + " " + APFDataFiles + "archivo.txt");
+                                    CleanningAPFExcelTxtFile(APFDataFiles + "archivo.txt",
+                                        APFDataFiles + Path.GetFileNameWithoutExtension(fileName) + ".txt");
+                                    Console.WriteLine("--------------> " + APFDataFiles + " ++++ " + entry.FullName);
+                                    Console.WriteLine("Deleting xlsx file - " + fullName);
+                                    try
+                                    {
+                                        System.IO.File.Delete(fullName);
+                                    }
+                                    catch (FileNotFoundException fileNotFoud)
+                                    {
+                                        Console.WriteLine(fileNotFoud.Message);
+                                    }
+                                    
+                                }
+                            }
                         }
                     }
+                    else
+                        Console.WriteLine("E R R O R, hay mas de un archivo en el archivo zip");
                 }
             }
-            
             Console.WriteLine("Deleting zip file - " + fileName);
             try
             {
@@ -230,17 +277,6 @@ namespace ActualizacionURLDaemon
             {
                 Console.WriteLine(fileNotFoud.Message);
             }
-
-            Console.WriteLine("Deleting xlsx file - " + fullName);
-            try
-            {
-                System.IO.File.Delete(fullName);
-            }
-            catch (FileNotFoundException fileNotFoud)
-            {
-                Console.WriteLine(fileNotFoud.Message);
-            }
-
             Console.WriteLine("Deleting temporary file - archivo.txt");
             try
             {
@@ -305,7 +341,7 @@ namespace ActualizacionURLDaemon
                 };
                 newFileTitle = APFDataFiles + fileTitle.Substring(fileTitle.LastIndexOf('/') + 1);
                 Console.WriteLine("Descargando: " + fileTitle + " - " + fileType);
-                Console.WriteLine(newFileTitle);
+                Console.WriteLine("newFileTitle: " + newFileTitle);
                 webClient.DownloadFile(fileTitle, newFileTitle);
                 // Ejemplo de como se zipea un directorio 
                 // System.IO.Compression.ZipFile.CreateFromDirectory(@"c:\example\start", @"D:\CompraNetTemporaryDataFiles\Contratos2018.zip");
